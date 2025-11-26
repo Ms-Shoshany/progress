@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: progress-db
+  labels:
+    app: progress-db
+    service: progress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: progress-db
+      service: progress
+  template:
+    metadata:
+      labels:
+        app: progress-db
+        service: progress
+    spec:
+      volumes:
+      - name: progress-db-volume
+        persistentVolumeClaim:
+          claimName: progress-db
+      containers:
+      - name: progress-db-container
+        image: mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: progress-db-volume
+        env: 
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"
